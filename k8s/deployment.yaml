@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: goserver
-  replicas: 7
+  replicas: 1
   template:
     metadata:
       labels: #label facilita a busca pelo pod
@@ -16,4 +16,38 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "donatowill/hello-go:v2"
+          image: "donatowill/hello-go:v5.3"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            periodSeconds: 5 #Efetua a requisição a cada 5 segundos
+            failureThreshold: 1 # Limite de quanto ocorre algum problema para ele reiniciar
+            timeoutSeconds: 1 #Timeout para a chamado ao endpoint de health
+            successThreshold: 1 #Informa quantas vezes ele precisa testar para confirmar que o serviço está ok
+          envFrom:
+            - configMapRef:
+                name: goserver-env
+            - secretRef:
+                name: goserver-secret
+          volumeMounts: #Monta o volume que declaramos
+            - mountPath: "/go/myfamily"
+              name: config
+      volumes: #Injetando arquivo ou valores no container
+        - name: config
+          configMap:
+            name: configmap-family
+            items:
+            - key: members
+              path: "family.txt"
+          # env:
+          #   - name: NAME
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: NAME
+          #   - name: AGE
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: AGE
