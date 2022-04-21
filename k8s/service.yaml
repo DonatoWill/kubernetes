@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: goserver-service
+spec:
+  selector:
+    app: goserver
+  type: ClusterIP
+  ports: 
+  - name: goserver-service
+    port: 8081 #Porta do service, o cluster acessa a porta do service e o service acessa a porta do container
+    targetPort: 8081 #É a porta definida no container
+    protocol: TCP

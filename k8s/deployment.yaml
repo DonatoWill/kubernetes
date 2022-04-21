@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goserver
+  labels:
+    app: goserver
+spec:
+  selector:
+    matchLabels:
+      app: goserver
+  replicas: 7
+  template:
+    metadata:
+      labels: #label facilita a busca pelo pod
+        app: "goserver"
+    spec:
+      containers:
+        - name: goserver
+          image: "donatowill/hello-go:v2"
