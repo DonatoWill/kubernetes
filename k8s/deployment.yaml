@@ -16,7 +16,31 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "donatowill/hello-go:v5.3"
+          image: "donatowill/hello-go:v5.5"
+
+          resources:
+            requests: # Indica o mínimo que a aplicação precisa para rodar, ele reserva este recurso do cluster para o POD
+              cpu: "0.3"
+              memory: 20Mi
+            limits: # O máximo que o POD pode consumir, sempre evitar que a soma de todos os limites ultrapasse a quantidade de recurso disponível no cluster
+              cpu: "0.3"
+              memory: 25Mi
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            periodSeconds: 3
+            failureThreshold: 30
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            periodSeconds: 3
+            failureThreshold: 1
+            # initialDelaySeconds: 10 #Informa um tempo para que aguarde antes de iniciar a verificar
+
           livenessProbe:
             httpGet:
               path: /healthz
@@ -25,6 +49,8 @@ spec:
             failureThreshold: 1 # Limite de quanto ocorre algum problema para ele reiniciar
             timeoutSeconds: 1 #Timeout para a chamado ao endpoint de health
             successThreshold: 1 #Informa quantas vezes ele precisa testar para confirmar que o serviço está ok
+            # initialDelaySeconds: 15
+
           envFrom:
             - configMapRef:
                 name: goserver-env
