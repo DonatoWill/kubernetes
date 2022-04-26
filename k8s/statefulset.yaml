@@ -22,3 +22,12 @@ spec:
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: root
+  volumeClaimTemplates: #Cria o volume para cada pod, caso o pod seja removido ele vincula automaticamente quando for recriado
+  - metadata:
+      name: mysql-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
