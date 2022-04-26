@@ -46,14 +46,24 @@ func Secret(w http.ResponseWriter, r *http.Request) {
 
 func Healthz(w http.ResponseWriter, r *http.Request) {
 
-	duration := time.Since(startedAt)
+	// duration := time.Since(startedAt)
 
-	if duration.Seconds() < 10 || duration.Seconds() > 30 {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(fmt.Sprintf("Server is not ready. It has been up for %s.", duration)))
+	// if duration.Seconds() < 10 || duration.Seconds() > 30 {
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	w.Write([]byte(fmt.Sprintf("Server is not ready. It has been up for %s.", duration)))
+	// } else {
+	// 	w.WriteHeader(http.StatusOK)
+	// 	w.Write([]byte(fmt.Sprintf("Server is ready. It has been up for %s.", duration)))
+	// }
+
+	duration := time.Since(startedAt)
+ 
+	if duration.Seconds() < 10 {
+	  w.WriteHeader(500)
+	  w.Write([]byte(fmt.Sprintf("Duration: %v", duration.Seconds())))
 	} else {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf("Server is ready. It has been up for %s.", duration)))
+	  w.WriteHeader(200)
+	  w.Write([]byte("ok"))
 	}
 
 }

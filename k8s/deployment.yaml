@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "donatowill/hello-go:v5.5"
+          image: "donatowill/hello-go:v6"
 
           resources:
             requests: # Indica o mínimo que a aplicação precisa para rodar, ele reserva este recurso do cluster para o POD
-              cpu: "0.3"
+              cpu: "0.05"
               memory: 20Mi
             limits: # O máximo que o POD pode consumir, sempre evitar que a soma de todos os limites ultrapasse a quantidade de recurso disponível no cluster
-              cpu: "0.3"
+              cpu: "0.05"
               memory: 25Mi
 
           startupProbe:
@@ -59,7 +59,12 @@ spec:
           volumeMounts: #Monta o volume que declaramos
             - mountPath: "/go/myfamily"
               name: config
+            - mountPath: "/go/pvc"
+              name: goserver-volume
       volumes: #Injetando arquivo ou valores no container
+        - name: goserver-volume
+          persistentVolumeClaim:
+            claimName: goserver-pvc
         - name: config
           configMap:
             name: configmap-family
